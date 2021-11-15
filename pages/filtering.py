@@ -1,0 +1,128 @@
+import streamlit as st
+import cv2
+import numpy
+import matplotlib.pyplot as plt
+import scipy.misc
+from scipy import ndimage
+
+def app():
+    st.write('# Image Filtering')
+    st.write("""
+
+    Our image filtering implementation will be applied on a given default set of input images, 
+    with which we will be demostrating the linear and non-linear filters. 
+
+    The goal is to apply and compare different image filtering algorithms, 
+    `linear and non-linear`, on the default input images shown below.
+
+    """)
+    img_or = ['./images/295087.jpg', './images/3096.jpg', './images/42049.jpg', './images/175032.jpg', './images/189080.jpg']
+
+    with st.expander("View default input images"):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.image(img_or[0], caption='Image view 1')
+        with col2:
+            st.image(img_or[1], caption="Image plan view")
+        with col3:
+            st.image(img_or[2], caption="Image vird view")
+        col4, col5 = st.columns(2)
+
+        with col4:
+            st.image(img_or[3], caption="Image snake")
+        with col5:
+            st.image(img_or[4], caption='Image man')
+
+    ################### Linear ###################
+    #################### Mean ####################
+    # st.write("### Image filtering results")
+
+    with st.expander("Image filtering impementation results"):
+        st.write("""
+        
+            The different filtering algorithms are categorized by columns: `Mean`, `Median` and `Sobel` filters. 
+            For more details, the source code is available in the [GitHub repository](https://github.com/nainiayoub).
+
+        """)
+
+        image1 = cv2.imread(img_or[0])
+        image2 = cv2.imread(img_or[1])
+        image3 = cv2.imread(img_or[2])
+        image4 = cv2.imread(img_or[3])
+        image5 = cv2.imread(img_or[4])
+        img_list = [image1, image2, image3, image4, image5]
+
+        # mean filter function
+        def meanFilter(images):
+            filtered = [cv2.blur(i, (3,3)) for i in images]
+            return filtered
+
+        # median filter function
+        def medianFilter(images):
+            filtered = [cv2.medianBlur(i, 5) for i in images]
+            return filtered
+############################## SOBEL ##############################
+        rgb_imgs = [cv2.cvtColor(img, cv2.COLOR_BGR2RGB) for img in img_list]
+        gray_imgs = [cv2.cvtColor(rgb_img , cv2.COLOR_BGR2GRAY) for rgb_img in rgb_imgs]
+        gauss_blur = [cv2.GaussianBlur(gray_img, (5,5), 0) for gray_img in gray_imgs]
+
+        # sobel function
+        def sobel(gauss_blured):
+            sobel_filtered = []
+            for i in gauss_blured:
+                x = cv2.Sobel(i, cv2.CV_16S, 1, 0)
+                y = cv2.Sobel(i, cv2.CV_16S, 0, 1)
+                absX = cv2.convertScaleAbs(x)
+                absY = cv2.convertScaleAbs(y)
+
+                sobel_filtered.append(cv2.addWeighted(absX, 0.5, absY, 0.5, 0))
+
+            return sobel_filtered
+##########################################################################################
+
+        meanFiltered = meanFilter(img_list)
+        medianFiltered = medianFilter(img_list)
+        sobel_images = sobel(gauss_blur)
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.write("__Original__")
+            st.image(img_or[0], caption="Original image 1")
+            st.image(img_or[1], caption="Original image 2")
+            st.image(img_or[2], caption="Original image 3")
+            st.image(img_or[3], caption="Original image 4")
+            st.image(img_or[4], caption="Original image 5")
+
+        with col2:
+            st.write("__Mean Filter__")
+            st.image(meanFiltered[0], caption="Mean filtered image 1")
+            st.image(meanFiltered[1], caption="Mean filtered image 2")
+            st.image(meanFiltered[2], caption="Mean filtered image 3")
+            st.image(meanFiltered[3], caption="Mean filtered image 4")
+            st.image(meanFiltered[4], caption="Mean filtered image 5")
+
+        with col3:
+            st.write("__Median Filter__")
+            st.image(medianFiltered[0], caption="Median filtered image 1")
+            st.image(medianFiltered[1], caption="Median filtered image 2")
+            st.image(medianFiltered[2], caption="Median filtered image 3")
+            st.image(medianFiltered[3], caption="Median filtered image 4")
+            st.image(medianFiltered[4], caption="Median filtered image 5")
+
+        with col4:
+          st.write("__Sobel Filter__")
+          st.image(sobel_images[0], caption="Sobel filtered image 1")
+          st.image(sobel_images[1], caption="Sobel filtered image 2")
+          st.image(sobel_images[2], caption="Sobel filtered image 3")
+          st.image(sobel_images[3], caption="Sobel filtered image 4")
+          st.image(sobel_images[4], caption="Sobel filtered image 5")
+
+    with st.expander("Additional notes and remarks"):
+        # st.write("More details are added regulary ...")
+        st.write("""
+        
+        * The median filter is normally used to reduce noise in an image, somewhat like the mean filter. 
+        * The median filter often does a better job than the mean filter of preserving useful detail in the image. 
+        * The median is a more robust average than the mean and so a single very unrepresentative pixel in a neighborhood will not affect the median value significantly. 
+        * The median filter is much better at preserving sharp edges than the mean filter.
+        
+        """)
