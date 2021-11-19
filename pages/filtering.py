@@ -1,6 +1,8 @@
 import streamlit as st
 import cv2
 import numpy
+import os
+from PIL import Image
 import matplotlib.pyplot as plt
 import scipy.misc
 from scipy import ndimage
@@ -18,6 +20,52 @@ def app():
     """)
     img_or = ['./images/295087.jpg', './images/3096.jpg', './images/42049.jpg', './images/175032.jpg', './images/189080.jpg']
 
+    # load images function
+    def load_image(img):
+        out_img = Image.open(img)
+        return out_img
+
+    # filter input image
+    def filter_input(img):
+        img_rgb = cv2.imread(img)
+        mean = cv2.blur(img_rgb, (3,3))
+        median = cv2.medianBlur(img_rgb, 5)
+        # sobel
+        gray_img = cv2.cvtColor(img_rgb , cv2.COLOR_BGR2GRAY)
+        gauss_blur_img = cv2.GaussianBlur(gray_img, (5,5), 0)
+        x = cv2.Sobel(gauss_blur_img, cv2.CV_16S, 1, 0)
+        y = cv2.Sobel(gauss_blur_img, cv2.CV_16S, 0, 1)
+        absX = cv2.convertScaleAbs(x)
+        absY = cv2.convertScaleAbs(y)
+        sobel = cv2.addWeighted(absX, 0.5, absY, 0.5, 0)
+
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.write("__Original__")
+            st.image(img)
+        with col2:
+            st.write("__Mean image__")
+            st.image(mean)
+        with col3:
+            st.write("__Median Image__")
+            st.image(median)
+        with col4:
+            st.write("__Sobel image__")
+            st.image(sobel)
+    
+    st.write("### Image filtering with user input")
+    input_image = st.file_uploader("Upload an image to apply filters", type=["jpeg", "jpg", "png"])
+    if input_image:
+        user_image = load_image(input_image)
+        st.image(user_image, caption=input_image.name, width=200)
+        # saving image
+        with open(os.path.join("./pages/temp-images", input_image.name), 'wb') as f:
+            f.write(input_image.getbuffer())
+        input_filter = "./pages/temp-images/"+input_image.name
+        filter_input(input_filter)
+
+############################ Default images ##################################
+    st.write("### Image filtering with default images")
     with st.expander("View default input images"):
         col1, col2, col3 = st.columns(3)
         with col1:
