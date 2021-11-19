@@ -1,7 +1,7 @@
+opencv_python==4.5.2.54
 pandas==1.2.4
-scipy==1.6.2
 streamlit==1.1.0
 matplotlib==3.4.1
+scipy==1.6.2
 numpy==1.19.5
-opencv_python==4.5.2.54
 Pillow==8.4.0
