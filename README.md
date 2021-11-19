@@ -4,10 +4,10 @@ __Find me at:__ [Twitter](https://twitter.com/nainia_ayoub) | [LinkedIn](https:/
 This project represents my solution for the image processing module's assignement, which is a multipage streamlit app that contains image processing sub implementations.
 
 ## Table of contents
-* [Image Filtering](#image-filtering-101)
+* [Image Filtering 101](#image-filtering-101)
     * [Linear Filtering](#linear-filtering)
-    * [Non-linear filtering](#non----linear-filtering)
-* [Image Compression](#image-compression-101)
+    * [Non-linear filtering](#non-linear-filtering)
+* [Image Compression 101](#image-compression-101)
     * [JPEG standard](#jpeg)
 
 ## Image Filtering 101
