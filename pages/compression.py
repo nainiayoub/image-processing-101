@@ -34,37 +34,44 @@ def app():
         loc_img = "./pages/temp-images/"+toCompress.name
         orig_img_size = (os.stat(loc_img).st_size)*0.001
         cap_original = "Original image size: "+str(orig_img_size)+" KB"
-        st.image(img_to_compress, caption=cap_original, width=200)
+        # st.image(img_to_compress, caption=cap_original, width=200)
 
         st.write("""
             After uploading the image, you will have to specify three different image qualities 
             to compress the original image `(0 <= Quality <= 100)`.
             """)
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
-            imgQuality1 = st.number_input("Compression quality 1", min_value=0, max_value=100, key=1)
+            imgQuality4 = st.number_input("Original Image", min_value=100, max_value=100, key=1)
+            
+            st.image(img_to_compress, caption=cap_original)
+
+        with col2:
+            imgQuality1 = st.number_input("Compression quality 1", min_value=0, max_value=100, key=2)
             img1 = "./pages/temp-images/Compressed1_"+toCompress.name
             img_to_compress.save(img1, optimize=True, quality=imgQuality1)
             sizekb1 = (os.stat(img1).st_size)*0.001
             cap1 = "Compressed image 1 size: "+str(sizekb1)+" KB"
             st.image(img1, caption=cap1)
 
-        with col2:
-            imgQuality2 = st.number_input("Compression quality 2", min_value=0, max_value=100, key=2)
+        with col3:
+            imgQuality2 = st.number_input("Compression quality 2", min_value=0, max_value=100, key=3)
             img2 = "./pages/temp-images/Compressed2_"+toCompress.name
             img_to_compress.save(img2, optimize=True, quality=imgQuality2)
             sizekb2 = (os.stat(img2).st_size)*0.001
             cap2 = "Compressed image 2 size: "+str(sizekb2)+" KB"
             st.image(img2, caption=cap2)
 
-        with col3:
-            imgQuality3 = st.number_input("Compression quality 3", min_value=0, max_value=100, key=3)
+        with col4:
+            imgQuality3 = st.number_input("Compression quality 3", min_value=0, max_value=100, key=4)
             img3 = "./pages/temp-images/Compressed3_"+toCompress.name
             img_to_compress.save(img3, optimize=True, quality=imgQuality3)
             sizekb3 = (os.stat(img3).st_size)*0.001
             cap3 = "Compressed image 3 size: "+str(sizekb3)+" KB"
             st.image(img3, caption=cap3)
-
+        
+        
+            
         st.write("### JPEG Standard")
         st.write("""
     
@@ -229,20 +236,3 @@ def app():
         plt.imshow(res, cmap=None)
         st.pyplot(fig)
 
-    with st.expander("JPEG with user input image"):
-        imagefile = st.file_uploader("Upload an image", type=["jpeg", "jpg", "png"])
-        if imagefile:
-            st.image(imagefile, caption=imagefile.name)
-            st.write("__Image compressing__")
-            st.write(imagefile)
-            # input_ycbcr = cv2.imread(imagefile, 0)
-            # col1, col2 = st.columns(2)
-            # with col1:
-            #     st.write("__Default original Image__")
-            #     st.image(default_image, caption="Original Image")
-            # with col2:
-            #     st.write("__Y Component__")
-            #     fig = plt.figure()
-            #     plt.imshow(img_ycbcr, cmap=None)
-            #     st.pyplot(fig)
-            #     # st.image(img_ycbcr, caption="Y component")
