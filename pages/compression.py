@@ -2,21 +2,71 @@ import streamlit as st
 import numpy as np 
 import pandas as pd 
 from PIL import Image
+import os
 import cv2
 from matplotlib import pyplot as plt
 
 def app():
+    # load images function
+    def load_image(img):
+        out_img = Image.open(img)
+        return out_img
+
     st.write("# Image Compression")
     st.write("""
     Image compression is an application of data compression that encode the original image with few bits. 
     It is basically an approach to represent and store information about the images in a minimum number of bits without losing the character of the image.
 
-    In this section we want to compress images using both standars: `JPEG` and `MPEG`
+    In this section we want to compress images using the `JPEG` standard.
 
     
     """)
-    st.write("### JPEG Standard")
-    st.write("""
+    st.write("### Image compression with user input")
+    toCompress = st.file_uploader("Upload the image to compress", type=["jpeg", "jpg", "png"])
+    if toCompress:
+        img_to_compress = load_image(toCompress)
+        
+        # save image
+        with open(os.path.join("./pages/temp-images", toCompress.name), "wb") as f:
+            f.write(toCompress.getbuffer())
+            st.caption("Image saved")
+
+        loc_img = "./pages/temp-images/"+toCompress.name
+        orig_img_size = (os.stat(loc_img).st_size)*0.001
+        cap_original = "Original image size: "+str(orig_img_size)+" KB"
+        st.image(img_to_compress, caption=cap_original, width=200)
+
+        st.write("""
+            After uploading the image, you will have to specify three different image qualities 
+            to compress the original image `(0 <= Quality <= 100)`.
+            """)
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            imgQuality1 = st.number_input("Compression quality 1", min_value=0, max_value=100, key=1)
+            img1 = "./pages/temp-images/Compressed1_"+toCompress.name
+            img_to_compress.save(img1, optimize=True, quality=imgQuality1)
+            sizekb1 = (os.stat(img1).st_size)*0.001
+            cap1 = "Compressed image 1 size: "+str(sizekb1)+" KB"
+            st.image(img1, caption=cap1)
+
+        with col2:
+            imgQuality2 = st.number_input("Compression quality 2", min_value=0, max_value=100, key=2)
+            img2 = "./pages/temp-images/Compressed2_"+toCompress.name
+            img_to_compress.save(img2, optimize=True, quality=imgQuality2)
+            sizekb2 = (os.stat(img2).st_size)*0.001
+            cap2 = "Compressed image 2 size: "+str(sizekb2)+" KB"
+            st.image(img2, caption=cap2)
+
+        with col3:
+            imgQuality3 = st.number_input("Compression quality 3", min_value=0, max_value=100, key=3)
+            img3 = "./pages/temp-images/Compressed3_"+toCompress.name
+            img_to_compress.save(img3, optimize=True, quality=imgQuality3)
+            sizekb3 = (os.stat(img3).st_size)*0.001
+            cap3 = "Compressed image 3 size: "+str(sizekb3)+" KB"
+            st.image(img3, caption=cap3)
+
+        st.write("### JPEG Standard")
+        st.write("""
     
 
     """)
