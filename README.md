@@ -1,7 +1,10 @@
-# Image Processing 101
+# Image Processing 101 (On going)
 __Find me at:__ [Twitter](https://twitter.com/nainia_ayoub) | [LinkedIn](https://www.linkedin.com/feed/) | [GitHub](https://github.com/nainiayoub)
 
 This project represents my solution for the image processing module's assignement, which is a multipage streamlit app that contains image processing sub implementations.
+
+https://user-images.githubusercontent.com/50157142/143588521-f86080c0-ddb6-474c-9284-d8bfa225c351.mp4
+
 
 ## Table of contents
 * [Image Filtering 101](#image-filtering-101)
